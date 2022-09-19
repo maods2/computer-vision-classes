@@ -46,12 +46,12 @@ def plot_transformation_comparison(
     f, axis = plt.subplots(n_row, n_col, figsize=(12, 7))
 
     for i in range(4):
-        axis[0,i].imshow(mpimg.imread(path_original[i]))
+        axis[0,i].imshow(mpimg.imread(path_original[i]),  cmap='gray')
         axis[0,i].set_title(f"{ data_folder_name.split('-')[1].capitalize() } {i+1}")
         axis[0,i].set_xticks([])
         axis[0,i].set_yticks([])
 
-        axis[1,i].imshow(mpimg.imread(path_transformed[i]))
+        axis[1,i].imshow(mpimg.imread(path_transformed[i]), cmap='gray')
         axis[1,i].set_title(f"{ new_folder_name.split('-')[1].capitalize() } {i+1}")
         axis[1,i].set_xticks([])
         axis[1,i].set_yticks([])
