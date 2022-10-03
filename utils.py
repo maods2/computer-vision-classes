@@ -10,7 +10,8 @@ def transform_and_store(
     main_path: str,
     data_folder_name: str, 
     new_folder_name: str, 
-    transformation_function: Callable
+    transformation_function: Callable,
+    output_type: str = 'image'
     ) -> None:
     """Utility functions that will load data from a given directoty,
     process this data based on a given transformation function and store 
@@ -55,9 +56,13 @@ def transform_and_store(
             output_path = input_path.replace(data_folder_name, new_folder_name)
             input_image = imread(input_path)
             transformed_image = transformation_function(input_image)
-            transformed_image*=255
-            transformed_image = np.uint8(transformed_image)
-            imsave(output_path, transformed_image)
+            if output_type == 'image':
+                transformed_image*=255
+                transformed_image = np.uint8(transformed_image)
+                imsave(output_path, transformed_image)
+            elif output_type == 'nparray':
+                np.save(output_path.replace(".jpg", ""), transformed_image)
+
 
 
 def plot_transformation_comparison(
@@ -101,5 +106,40 @@ def plot_transformation_comparison(
         axis[1,i].set_title(f"{ new_folder_name.split('-')[1].capitalize() } {i+1}")
         axis[1,i].set_xticks([])
         axis[1,i].set_yticks([])
+
+    plt.show()
+
+
+def plot_features(main_path, folders, titles):
+    n_row, n_col = 3, 7
+    f, axis = plt.subplots(n_row, n_col, figsize=(18, 7))
+
+    for i, folder in enumerate(folders):
+        path = list(pathlib.Path(main_path + folder + '/n/').glob('*'))
+
+        if folder == '01-resized':
+            img1 = imread(str(path[20]))
+            img2 = imread(str(path[30]))
+            img3 = imread(str(path[2]))
+        else:
+            img1 = np.load(str(path[20]))
+            img2 = np.load(str(path[30]))
+            img3 = np.load(str(path[2]))
+
+
+        axis[0,i].imshow(img1,  cmap='gray')
+        axis[0,i].set_title(titles[i])
+        axis[0,i].set_xticks([])
+        axis[0,i].set_yticks([])
+
+        axis[1,i].imshow(img2,  cmap='gray')
+        axis[1,i].set_title(titles[i])
+        axis[1,i].set_xticks([])
+        axis[1,i].set_yticks([])
+
+        axis[2,i].imshow(img3, cmap='gray')
+        axis[2,i].set_title(titles[i])
+        axis[2,i].set_xticks([])
+        axis[2,i].set_yticks([])
 
     plt.show()
