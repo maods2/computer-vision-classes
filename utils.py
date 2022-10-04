@@ -110,7 +110,7 @@ def plot_transformation_comparison(
     plt.show()
 
 
-def plot_features(main_path, folders, titles):
+def plot_features(main_path, folders, titles, result_is_image=True):
     n_row, n_col = 3, 7
     f, axis = plt.subplots(n_row, n_col, figsize=(18, 7))
 
@@ -127,19 +127,35 @@ def plot_features(main_path, folders, titles):
             img3 = np.load(str(path[2]))
 
 
-        axis[0,i].imshow(img1,  cmap='gray')
-        axis[0,i].set_title(titles[i])
-        axis[0,i].set_xticks([])
-        axis[0,i].set_yticks([])
+        if result_is_image or i == 0:
+            axis[0,i].imshow(img1,  cmap='gray')
+            axis[0,i].set_title(titles[i])
+            axis[0,i].set_xticks([])
+            axis[0,i].set_yticks([])
 
-        axis[1,i].imshow(img2,  cmap='gray')
-        axis[1,i].set_title(titles[i])
-        axis[1,i].set_xticks([])
-        axis[1,i].set_yticks([])
+            axis[1,i].imshow(img2,  cmap='gray')
+            axis[1,i].set_title(titles[i])
+            axis[1,i].set_xticks([])
+            axis[1,i].set_yticks([])
 
-        axis[2,i].imshow(img3, cmap='gray')
-        axis[2,i].set_title(titles[i])
-        axis[2,i].set_xticks([])
-        axis[2,i].set_yticks([])
+            axis[2,i].imshow(img3, cmap='gray')
+            axis[2,i].set_title(titles[i])
+            axis[2,i].set_xticks([])
+            axis[2,i].set_yticks([])
+        else:            
+            axis[0,i].plot(img1)
+            axis[0,i].set_title(titles[i])
+            axis[0,i].set_xticks([])
+            axis[0,i].set_yticks([])
+
+            axis[1,i].plot(img2)
+            axis[1,i].set_title(titles[i])
+            axis[1,i].set_xticks([])
+            axis[1,i].set_yticks([])
+
+            axis[2,i].plot(img3)
+            axis[2,i].set_title(titles[i])
+            axis[2,i].set_xticks([])
+            axis[2,i].set_yticks([])
 
     plt.show()
