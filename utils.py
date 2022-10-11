@@ -4,6 +4,8 @@ from skimage.io import imread, imsave
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 from typing import Callable
+import gc
+from tqdm import tqdm
 
 
 def transform_and_store(
@@ -159,3 +161,57 @@ def plot_features(main_path, folders, titles, result_is_image=True):
             axis[2,i].set_yticks([])
 
     plt.show()
+
+
+
+def concat_features(subfolder, image_code):
+    main_path='../dados/Hypercellularity/'
+    data_path = pathlib.Path(main_path)
+    features = []
+    for steps in tqdm(['10','11','12']):
+        for path in tqdm(data_path.glob(f'**/{steps}.*')):
+            image_feature = np.load(str(path) + f'/{subfolder}/{image_code}.npy')
+            if len(image_feature.shape) == 3:
+                image_feature = image_feature[:,:,0].flatten()
+                features.append(image_feature)
+            elif len(image_feature.shape) == 2:
+                image_feature = image_feature.flatten()
+                features.append(image_feature)
+            else:
+                features.append(image_feature.copy())
+
+            del image_feature
+            gc.collect()
+
+    return np.concatenate(features)
+
+def normalize(xs):
+    v_min = xs.min(axis=(0), keepdims=True)
+    v_max = xs.max(axis=(0), keepdims=True)
+    xs = (xs - v_min)/(v_max - v_min)
+    return xs
+
+
+def agregate_features():
+
+    original_path = '../dados/Hypercellularity/00-original/'
+
+    features = []
+    labels = []
+
+    SUB_FOLDERS = ['n', 'p']
+    for sub_folder in tqdm(SUB_FOLDERS):
+        data_path = pathlib.Path(original_path + sub_folder)
+        for path in tqdm(data_path.glob('*')):
+            image_code = str(path)[:-4].replace(str(data_path)+'/', "")
+            image_representation = concat_features(sub_folder, image_code)
+            image_representation = normalize(image_representation)
+            image_class = 1 if sub_folder == 'n' else -1
+            features.append(image_representation)
+            labels.append(image_class)
+            break
+    x = np.vstack(features) 
+    y = np.vstack(labels) 
+
+    return x, y
+      
