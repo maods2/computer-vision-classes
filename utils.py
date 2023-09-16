@@ -111,6 +111,50 @@ def plot_transformation_comparison(
 
     plt.show()
 
+def plot_transformation_comparison2(
+        main_path: str,
+        data_folder_name: str, 
+        new_folder_name: str, 
+    ) -> None:
+    """Utility function that will plot images present into given directories.
+
+    Parameters
+    ----------
+    main_path : string
+        Main directory where the data is stored.
+    data_folder_name : string
+        Data folder name in which the data that will be plotted is stored.
+    new_folder_name : string
+        Data folder name in which the data that will be plotted is stored.
+   
+
+    Examples
+    --------
+
+    >>> plot_transformation_comparison(
+            main_path='/main_path/',
+            data_folder_name='00-original', 
+            new_folder_name='01-resized',
+        )
+    """
+    path_original = list(pathlib.Path(main_path + data_folder_name + '/n/' ).glob('*'))
+    path_transformed = list(pathlib.Path(main_path + new_folder_name + '/p/' ).glob('*'))
+    n_row, n_col = 2, 4
+    f, axis = plt.subplots(n_row, n_col, figsize=(10, 5))
+
+    for i in range(4):
+        axis[0,i].imshow(mpimg.imread(path_original[i]),  cmap='gray')
+        # axis[0,i].set_title(f"{ data_folder_name.split('-')[1].capitalize() } {i+1}")
+        axis[0,i].set_xticks([])
+        axis[0,i].set_yticks([])
+
+        axis[1,i].imshow(mpimg.imread(path_transformed[i]), cmap='gray')
+        # axis[1,i].set_title(f"{ new_folder_name.split('-')[1].capitalize() } {i+1}")
+        axis[1,i].set_xticks([])
+        axis[1,i].set_yticks([])
+
+    plt.show()
+
 
 def plot_features(main_path, folders, titles, result_is_image=True):
     n_row, n_col = 3, 7
